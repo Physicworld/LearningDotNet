@@ -19,12 +19,20 @@ public static class ActorsEndpoints
         group.MapGet("/{id:int}", GetByID);
         group.MapGet("getByName/{name}", GetByName);
         group.MapPost("/", Create).DisableAntiforgery();
+        group.MapPut("/{id:int}", Update).DisableAntiforgery();
+        group.MapDelete("/{id:int}", Delete);
         return group;
     }
 
-    static async Task<Ok<List<ReadActorDTO>>> GetActors(IRepositoryActors repository, IMapper mapper)
+    static async Task<Ok<List<ReadActorDTO>>> GetActors(IRepositoryActors repository, IMapper mapper, int page = 1,
+        int recordsByPage = 10)
     {
-        var actors = await repository.GetAll();
+        var pagination = new PaginationDTO
+        {
+            Page = page,
+            RecordsByPage = recordsByPage
+        };
+        var actors = await repository.GetAll(pagination);
         var actorsDTOs = mapper.Map<List<ReadActorDTO>>(actors);
         return TypedResults.Ok(actorsDTOs);
     }
@@ -41,8 +49,8 @@ public static class ActorsEndpoints
         return TypedResults.Ok(readActorDTO);
     }
 
-    static async Task<Results<Ok<List<ReadActorDTO>>, NotFound>> GetByName(string name, 
-    IRepositoryActors repository, IMapper mapper)
+    static async Task<Results<Ok<List<ReadActorDTO>>, NotFound>> GetByName(string name,
+        IRepositoryActors repository, IMapper mapper)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -54,7 +62,7 @@ public static class ActorsEndpoints
         {
             return TypedResults.NotFound();
         }
-        
+
         var actorsDTOs = mapper.Map<List<ReadActorDTO>>(actors);
         return TypedResults.Ok(actorsDTOs);
     }
@@ -73,5 +81,54 @@ public static class ActorsEndpoints
         await outputCacheStore.EvictByTagAsync("actors-get", default);
         var readActorDTO = mapper.Map<ReadActorDTO>(actor);
         return TypedResults.Created($"/actors/{id}", readActorDTO);
+    }
+
+
+    static async Task<Results<NoContent, NotFound>> Update(
+        int Id,
+        [FromForm] CreateActorDTO createActorDto,
+        IRepositoryActors repository,
+        IFileStorage fileStorage,
+        IOutputCacheStore outputCacheStore,
+        IMapper mapper)
+    {
+        var actorDB = await repository.GetById(Id);
+        if (actorDB is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        var actor = mapper.Map<Actor>(createActorDto);
+        actor.Id = Id;
+        actor.Photo = actorDB.Photo;
+
+        if (createActorDto.Photo is not null)
+        {
+            var url = await fileStorage.Edit(actor.Photo, container, createActorDto.Photo);
+            actor.Photo = url;
+        }
+
+        await repository.Update(actor);
+        await outputCacheStore.EvictByTagAsync("actors-get", default);
+        return TypedResults.NoContent();
+    }
+
+    static async Task<Results<NoContent, NotFound>> Delete(
+        int Id,
+        IRepositoryActors repository,
+        IFileStorage fileStorage,
+        IOutputCacheStore outputCacheStore
+    )
+    {
+        var actorDB = await repository.GetById(Id);
+        if (actorDB is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        await fileStorage.Delete(actorDB.Photo, container);
+        await repository.Delete(Id);
+        await outputCacheStore.EvictByTagAsync("actors-get", default);
+        return TypedResults.NoContent();
     }
 }

@@ -17,4 +17,4 @@ public class PaginationDTO
             recordsByPage = (value > MaxRecordsByPage) ? MaxRecordsByPage : value;
         }
     }
-}
+} 
