@@ -72,4 +72,23 @@ public class RepositoryMovies : IRepositoryMovies
         movie.GenresMovies = _mapper.Map(genresMovies, movie.GenresMovies);
         await _context.SaveChangesAsync();
     }
+
+    public async Task AssignActors(int Id, List<ActorMovie> actors)
+    {
+        for (int i = 1; i <= actors.Count; i++)
+        {
+            actors[i - 1].Order = i;
+        }
+
+        var movie = await _context.Movies
+            .Include(x => x.ActorsMovies)
+            .FirstOrDefaultAsync(x => x.Id == Id);
+        if (movie is null)
+        {
+            throw new ArgumentException($"Movie not found {Id}");
+        }
+
+        movie.ActorsMovies = _mapper.Map(actors, movie.ActorsMovies);
+        await _context.SaveChangesAsync();
+    }
 }
