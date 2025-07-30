@@ -34,6 +34,11 @@ public class RepositoryGenres : IRepositoryGenres
         return await context.Genres.AnyAsync(x => x.Id == Id);
     }
 
+    public async Task<List<int>> ListExists(List<int> ids)
+    {
+        return await context.Genres.Where(g => ids.Contains(g.Id)).Select(g => g.Id).ToListAsync();
+    }
+
     public async Task Update(Genre genre)
     {
         context.Update(genre);

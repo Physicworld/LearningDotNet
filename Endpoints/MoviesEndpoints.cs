@@ -20,6 +20,7 @@ public static class MoviesEndpoints
         group.MapPost("/", Create).DisableAntiforgery();
         group.MapPut("/{Id:int}", Update).DisableAntiforgery();
         group.MapDelete("/{Id:int}", Delete);
+        group.MapPost("/{Id:int}/assigngenres", AssignGenres);
         return group;
     }
 
@@ -95,11 +96,12 @@ public static class MoviesEndpoints
             var url = await fileStorage.Edit(movie.Poster, container, createMovieDTO.Poster);
             movie.Poster = url;
         }
+
         await repository.Update(movie);
         await outputCacheStore.EvictByTagAsync("movies-get", default);
         return TypedResults.NoContent();
     }
-    
+
     static async Task<Results<NoContent, NotFound>> Delete(
         int Id,
         IRepositoryMovies repository,
@@ -111,9 +113,40 @@ public static class MoviesEndpoints
         {
             return TypedResults.NotFound();
         }
+
         await fileStorage.Delete(movieDB.Poster, container);
         await repository.Delete(Id);
         await outputCacheStore.EvictByTagAsync("movies-get", default);
+        return TypedResults.NoContent();
+    }
+
+    static async Task<Results<NoContent, NotFound, BadRequest<string>>> AssignGenres(
+        int Id,
+        List<int> genresIds,
+        IRepositoryMovies repositoryMovies,
+        IRepositoryGenres repositoryGenres
+    )
+    {
+        if (!await repositoryMovies.Exists(Id))
+        {
+            return TypedResults.NotFound();
+        }
+
+        var availableGenres = new List<int>();
+
+        if (genresIds.Count != 0)
+        {
+            availableGenres = await repositoryGenres.ListExists(genresIds);
+        }
+
+        if (availableGenres.Count != genresIds.Count)
+        {
+            var notAvailableGenres = genresIds.Except(availableGenres);
+            return TypedResults.BadRequest(
+                $"The id of genres are {string.Join(",", notAvailableGenres)} do not exists");
+        }
+
+        await repositoryMovies.AssignGenre(Id, genresIds);
         return TypedResults.NoContent();
     }
 }

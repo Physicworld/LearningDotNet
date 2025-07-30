@@ -7,4 +7,5 @@ public class ReadMovieDTO
     public bool InCinemas { get; set; }
     public DateTime LaunchDate { get; set; }
     public string? Poster { get; set; }
+    public List<ReadCommentDTO> Comments { get; set; } = new List<ReadCommentDTO>();
 }

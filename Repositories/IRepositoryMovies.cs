@@ -11,4 +11,5 @@ public interface IRepositoryMovies
     Task Update(Movie movie);
     Task Delete(int Id);
     Task<bool> Exists(int Id);
+    Task AssignGenre(int Id, List<int> genresIds);
 }
