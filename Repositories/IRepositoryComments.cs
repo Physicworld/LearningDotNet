@@ -9,5 +9,5 @@ public interface IRepositoryComments
     Task<int> Create(Comment comment);
     Task<bool> Exists(int Id);
     Task Update(Comment comment);
-    Task Delte(int Id);
+    Task Delete(int Id);
 }

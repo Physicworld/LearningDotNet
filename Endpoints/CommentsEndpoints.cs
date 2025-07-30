@@ -12,8 +12,10 @@ public static class CommentsEndpoints
     public static RouteGroupBuilder MapComments(this RouteGroupBuilder group)
     {
         group.MapPost("/", Create);
-        group.MapGet("/", GetComments).CacheOutput(x=>x.Expire(TimeSpan.FromSeconds(60)).Tag("comments-get"));
+        group.MapGet("/", GetComments).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(60)).Tag("comments-get"));
         group.MapGet("/{commentId:int}", GetCommentById);
+        group.MapPut("/{commentId:int}", Update);
+        group.MapDelete("/{commentId:int}", Delete);
         return group;
     }
 
@@ -82,5 +84,50 @@ public static class CommentsEndpoints
         await outputCacheStore.EvictByTagAsync("comments-get", default);
         var readCommentDto = mapper.Map<ReadCommentDTO>(comment);
         return TypedResults.Created($"/comment/{id}", readCommentDto);
+    }
+
+    static async Task<Results<NoContent, NotFound>> Update(
+        int movieId,
+        int commentId,
+        CreateCommentDTO createCommentDto,
+        IRepositoryComments repositoryComments,
+        IRepositoryMovies repositoryMovies,
+        IMapper mapper,
+        IOutputCacheStore outputCacheStore
+    )
+    {
+        if (!await repositoryMovies.Exists(movieId))
+        {
+            return TypedResults.NotFound();
+        }
+
+        if (!await repositoryComments.Exists(commentId))
+        {
+            return TypedResults.NotFound();
+        }
+
+        var comment = mapper.Map<Comment>(createCommentDto);
+        comment.Id = commentId;
+        comment.MovieId = movieId;
+        await repositoryComments.Update(comment);
+        await outputCacheStore.EvictByTagAsync("comments-get", default);
+        return TypedResults.NoContent();
+    }
+
+    static async Task<Results<NoContent, NotFound>> Delete(
+        int movieId,
+        int commentId,
+        IRepositoryComments repositoryComments,
+        IOutputCacheStore outputCacheStore
+    )
+    {
+        if (!await repositoryComments.Exists(commentId))
+        {
+            return TypedResults.NotFound();
+        }
+
+        await repositoryComments.Delete(commentId);
+        await outputCacheStore.EvictByTagAsync("comments-get", default);
+        return TypedResults.NoContent();
     }
 }

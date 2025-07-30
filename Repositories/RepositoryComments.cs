@@ -40,7 +40,7 @@ public class RepositoryComments : IRepositoryComments
         await _context.SaveChangesAsync();
     }
 
-    public async Task Delte(int Id)
+    public async Task Delete(int Id)
     {
         await _context.Comments.Where(x => x.Id == Id).ExecuteDeleteAsync();
     }
