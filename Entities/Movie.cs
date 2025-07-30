@@ -7,4 +7,5 @@ public class Movie
     public bool InCinemas { get; set; }
     public DateTime LaunchDate { get; set; }
     public string? Poster { get; set; }
+    public List<Comment> Comments { get; set; } = new List<Comment>();
 }

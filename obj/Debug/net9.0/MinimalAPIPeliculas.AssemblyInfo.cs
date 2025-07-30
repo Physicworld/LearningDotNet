@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MinimalAPIPeliculas")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3f35a54ef8b29e9ac5c951b0c9a4ed31623a4832")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+07e82ac6120524b27a6bfa98d6e6e32d34066c43")]
 [assembly: System.Reflection.AssemblyProductAttribute("MinimalAPIPeliculas")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MinimalAPIPeliculas")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

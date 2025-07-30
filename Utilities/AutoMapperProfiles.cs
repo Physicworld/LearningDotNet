@@ -18,5 +18,8 @@ public class AutoMapperProfiles : Profile
         CreateMap<CreateMovieDTO, Movie>()
             .ForMember(x => x.Poster, options => options.Ignore());
         CreateMap<Movie, ReadMovieDTO>();
+
+        CreateMap<CreateCommentDTO, Comment>();
+        CreateMap<Comment, ReadCommentDTO>();
     }
 }

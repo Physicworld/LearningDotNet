@@ -28,6 +28,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IRepositoryGenres, RepositoryGenres>();
 builder.Services.AddScoped<IRepositoryActors, RepositoryActors>();
 builder.Services.AddScoped<IRepositoryMovies, RepositoryMovies>();
+builder.Services.AddScoped<IRepositoryComments, RepositoryComments>();
 builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(Program));
@@ -50,6 +51,7 @@ app.MapGet("/", [EnableCors(policyName: "Free")]() => "Hello World!");
 app.MapGroup("/genres").MapGenres();
 app.MapGroup("/actors").MapActors();
 app.MapGroup("/movies").MapMovies();
+app.MapGroup("/movie/{movieId:int}/comments").MapComments();
 
 // End middlewares
 

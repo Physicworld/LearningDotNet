@@ -18,6 +18,8 @@ public static class MoviesEndpoints
         group.MapGet("/", GetMovies).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(60)).Tag("movies-get"));
         group.MapGet("/{Id:int}", GetByID);
         group.MapPost("/", Create).DisableAntiforgery();
+        group.MapPut("/{Id:int}", Update).DisableAntiforgery();
+        group.MapDelete("/{Id:int}", Delete);
         return group;
     }
 

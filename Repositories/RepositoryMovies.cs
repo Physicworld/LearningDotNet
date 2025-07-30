@@ -48,6 +48,6 @@ public class RepositoryMovies : IRepositoryMovies
 
     public async Task<bool> Exists(int Id)
     {
-        return await _context.Actors.AnyAsync(x => x.Id == Id);
+        return await _context.Movies.AnyAsync(x => x.Id == Id);
     }
 }
