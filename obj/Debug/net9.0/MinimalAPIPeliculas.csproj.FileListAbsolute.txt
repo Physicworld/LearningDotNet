@@ -157,3 +157,5 @@
 /home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/obj/Debug/net9.0/MinimalAPIPeliculas.pdb
 /home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/obj/Debug/net9.0/MinimalAPIPeliculas.genruntimeconfig.cache
 /home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/obj/Debug/net9.0/ref/MinimalAPIPeliculas.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/FluentValidation.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/FluentValidation.DependencyInjectionExtensions.dll

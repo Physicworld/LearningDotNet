@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.OutputCaching;
 using MinimalAPIPeliculas.DTOs;
 using MinimalAPIPeliculas.Repositories;
 using MinimalAPIPeliculas.Entities;
+using MinimalAPIPeliculas.Filters;
 
 namespace MinimalAPIPeliculas.Endpoints;
 
@@ -11,10 +12,10 @@ public static class CommentsEndpoints
 {
     public static RouteGroupBuilder MapComments(this RouteGroupBuilder group)
     {
-        group.MapPost("/", Create);
+        group.MapPost("/", Create).AddEndpointFilter<FilterValidations<CreateCommentDTO>>();
         group.MapGet("/", GetComments).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(60)).Tag("comments-get"));
         group.MapGet("/{commentId:int}", GetCommentById);
-        group.MapPut("/{commentId:int}", Update);
+        group.MapPut("/{commentId:int}", Update).AddEndpointFilter<FilterValidations<CreateCommentDTO>>();
         group.MapDelete("/{commentId:int}", Delete);
         return group;
     }

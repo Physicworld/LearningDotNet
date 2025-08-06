@@ -6,6 +6,7 @@ using MinimalAPIPeliculas.DTOs;
 using MinimalAPIPeliculas.Repositories;
 using MinimalAPIPeliculas.Services;
 using MinimalAPIPeliculas.Entities;
+using MinimalAPIPeliculas.Filters;
 
 namespace MinimalAPIPeliculas.Endpoints;
 
@@ -17,8 +18,8 @@ public static class MoviesEndpoints
     {
         group.MapGet("/", GetMovies).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(60)).Tag("movies-get"));
         group.MapGet("/{Id:int}", GetByID);
-        group.MapPost("/", Create).DisableAntiforgery();
-        group.MapPut("/{Id:int}", Update).DisableAntiforgery();
+        group.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<FilterValidations<CreateMovieDTO>>();
+        group.MapPut("/{Id:int}", Update).DisableAntiforgery().AddEndpointFilter<FilterValidations<CreateMovieDTO>>();
         group.MapDelete("/{Id:int}", Delete);
         group.MapPost("/{Id:int}/assigngenres", AssignGenres);
         group.MapPost("/{Id:int}/assignactors", AssignActors);
