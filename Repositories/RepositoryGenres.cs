@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MinimalAPIPeliculas.DTOs;
 using MinimalAPIPeliculas.Entities;
 
 namespace MinimalAPIPeliculas.Repositories;
@@ -44,7 +45,7 @@ public class RepositoryGenres : IRepositoryGenres
         return await context.Genres.Where(g => ids.Contains(g.Id)).Select(g => g.Id).ToListAsync();
     }
 
-    public async Task Update(Genre genre)
+    public async Task Update(ReadGenreDTO genre)
     {
         context.Update(genre);
         await context.SaveChangesAsync();
