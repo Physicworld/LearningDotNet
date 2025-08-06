@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.OutputCaching;
 using MinimalAPIPeliculas.DTOs;
 using MinimalAPIPeliculas.Repositories;
 using MinimalAPIPeliculas.Entities;
+using MinimalAPIPeliculas.Filters;
 using MinimalAPIPeliculas.Services;
 
 namespace MinimalAPIPeliculas.Endpoints;
@@ -19,8 +20,8 @@ public static class ActorsEndpoints
         group.MapGet("/", GetActors).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(60)).Tag("actors-get"));
         group.MapGet("/{id:int}", GetByID);
         group.MapGet("getByName/{name}", GetByName);
-        group.MapPost("/", Create).DisableAntiforgery();
-        group.MapPut("/{id:int}", Update).DisableAntiforgery();
+        group.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<FilterValidations<CreateActorDTO>>();
+        group.MapPut("/{id:int}", Update).DisableAntiforgery().AddEndpointFilter<FilterValidations<CreateActorDTO>>();
         group.MapDelete("/{id:int}", Delete);
         return group;
     }
@@ -73,16 +74,9 @@ public static class ActorsEndpoints
         IRepositoryActors repository,
         IOutputCacheStore outputCacheStore,
         IMapper mapper,
-        IFileStorage fileStorage,
-        IValidator<CreateActorDTO> validator
+        IFileStorage fileStorage
     )
     {
-        var resultValidation = await validator.ValidateAsync(createActorDTO);
-        if (!resultValidation.IsValid)
-        {
-            return TypedResults.ValidationProblem(resultValidation.ToDictionary());
-        }
-
         var actor = mapper.Map<Actor>(createActorDTO);
         if (createActorDTO.Photo is not null)
         {

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.Http.HttpResults;
 using MinimalAPIPeliculas.DTOs;
+using MinimalAPIPeliculas.Filters;
 
 namespace MinimalAPIPeliculas.Endpoints;
 
@@ -16,8 +17,8 @@ public static class GenresEndpoint
     {
         group.MapGet("/", GetGenres)
             .CacheOutput(c => c.Expire(TimeSpan.FromSeconds(60)).Tag("genres-get"));
-        group.MapGet("/{id:int}", GetGenreById);
-        group.MapPost("/", CreateGenre);
+        group.MapGet("/{id:int}", GetGenreById).AddEndpointFilter<FilterValidations<CreateGenreDTO>>();
+        group.MapPost("/", CreateGenre).AddEndpointFilter<FilterValidations<CreateGenreDTO>>();
         group.MapPut("/{id:int}", UpdateGenre);
         group.MapDelete("/{id:int}", DeleteGenre);
         return group;
@@ -47,16 +48,9 @@ public static class GenresEndpoint
         CreateGenreDTO createGenreDTO,
         IRepositoryGenres repository,
         IOutputCacheStore outputCacheStore,
-        IMapper mapper,
-        IValidator<CreateGenreDTO> validator
+        IMapper mapper
     )
     {
-        var resultValidation = await validator.ValidateAsync(createGenreDTO);
-        if (!resultValidation.IsValid)
-        {
-            return TypedResults.ValidationProblem(resultValidation.ToDictionary());
-        }
-
         var genre = mapper.Map<Genre>(createGenreDTO);
         var id = await repository.Create(genre);
         await outputCacheStore.EvictByTagAsync("genres-get", default);
@@ -69,15 +63,9 @@ public static class GenresEndpoint
         CreateGenreDTO createGenreDTO,
         IRepositoryGenres repository,
         IOutputCacheStore outputCacheStore,
-        IMapper mapper,
-        IValidator<CreateGenreDTO> validator
+        IMapper mapper
     )
     {
-        var resultValidation = await validator.ValidateAsync(createGenreDTO);
-        if (!resultValidation.IsValid)
-        {
-            return TypedResults.ValidationProblem(resultValidation.ToDictionary());
-        }
         var exists = await repository.Exists(Id);
         if (!exists)
         {
@@ -90,7 +78,6 @@ public static class GenresEndpoint
         await outputCacheStore.EvictByTagAsync("genres-get", default);
         return TypedResults.NoContent();
     }
-
 
 
     static async Task<Results<NoContent, NotFound>> DeleteGenre(int Id, IRepositoryGenres repository,
