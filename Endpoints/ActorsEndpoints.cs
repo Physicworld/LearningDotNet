@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
@@ -67,9 +68,21 @@ public static class ActorsEndpoints
         return TypedResults.Ok(actorsDTOs);
     }
 
-    static async Task<Created<ReadActorDTO>> Create([FromForm] CreateActorDTO createActorDTO,
-        IRepositoryActors repository, IOutputCacheStore outputCacheStore, IMapper mapper, IFileStorage fileStorage)
+    static async Task<Results<Created<ReadActorDTO>, ValidationProblem>> Create(
+        [FromForm] CreateActorDTO createActorDTO,
+        IRepositoryActors repository,
+        IOutputCacheStore outputCacheStore,
+        IMapper mapper,
+        IFileStorage fileStorage,
+        IValidator<CreateActorDTO> validator
+    )
     {
+        var resultValidation = await validator.ValidateAsync(createActorDTO);
+        if (!resultValidation.IsValid)
+        {
+            return TypedResults.ValidationProblem(resultValidation.ToDictionary());
+        }
+
         var actor = mapper.Map<Actor>(createActorDTO);
         if (createActorDTO.Photo is not null)
         {
