@@ -32,7 +32,14 @@ public class RepositoryMovies : IRepositoryMovies
 
     public async Task<Movie?> GetById(int Id)
     {
-        return await _context.Movies.Include(p => p.Comments).AsNoTracking().FirstOrDefaultAsync(p => p.Id == Id);
+        return await _context.Movies
+            .Include(p => p.Comments)
+            .Include(p => p.GenresMovies)
+            .ThenInclude(p => p.Genre)
+            .Include(p => p.ActorsMovies.OrderBy(a => a.Order))
+            .ThenInclude(p => p.Actor)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Id == Id);
     }
 
     public async Task<int> Create(Movie movie)

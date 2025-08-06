@@ -21,6 +21,7 @@ public static class MoviesEndpoints
         group.MapPut("/{Id:int}", Update).DisableAntiforgery();
         group.MapDelete("/{Id:int}", Delete);
         group.MapPost("/{Id:int}/assigngenres", AssignGenres);
+        group.MapPost("/{Id:int}/assignactors", AssignActors);
         return group;
     }
 
@@ -147,6 +148,39 @@ public static class MoviesEndpoints
         }
 
         await repositoryMovies.AssignGenre(Id, genresIds);
+        return TypedResults.NoContent();
+    }
+
+    static async Task<Results<NotFound, NoContent, BadRequest<string>>> AssignActors(
+        int Id,
+        List<AssignActorMovieDTO> actorsDTO,
+        IRepositoryMovies repositoryMovies,
+        IRepositoryActors repositoryActors,
+        IMapper mapper
+    )
+    {
+        if (!await repositoryMovies.Exists(Id))
+        {
+            return TypedResults.NotFound();
+        }
+
+        var availableActors = new List<int>();
+        var actorsIds = actorsDTO.Select(a => a.ActorId).ToList();
+
+        if (actorsIds.Count != 0)
+        {
+            availableActors = await repositoryActors.ListExists(actorsIds);
+        }
+
+        if (availableActors.Count != actorsIds.Count)
+        {
+            var notAvailableActors = actorsIds.Except(availableActors);
+            return TypedResults.BadRequest(
+                $"The id of the actors {string.Join(",", notAvailableActors)} do not exists");
+        }
+
+        var actors = mapper.Map<List<ActorMovie>>(actorsDTO);
+        await repositoryMovies.AssignActors(Id, actors);
         return TypedResults.NoContent();
     }
 }

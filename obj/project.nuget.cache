@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "nj6Vq/Qw6kc=",
+  "dgSpecHash": "+Z1r3c1u/aA=",
   "success": true,
   "projectFilePath": "/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/MinimalAPIPeliculas.csproj",
   "expectedPackageFiles": [
     "/home/sundaythequant/.nuget/packages/automapper/12.0.1/automapper.12.0.1.nupkg.sha512",
     "/home/sundaythequant/.nuget/packages/automapper.extensions.microsoft.dependencyinjection/12.0.1/automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
+    "/home/sundaythequant/.nuget/packages/fluentvalidation/12.0.0/fluentvalidation.12.0.0.nupkg.sha512",
+    "/home/sundaythequant/.nuget/packages/fluentvalidation.dependencyinjectionextensions/12.0.0/fluentvalidation.dependencyinjectionextensions.12.0.0.nupkg.sha512",
     "/home/sundaythequant/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/sundaythequant/.nuget/packages/microsoft.bcl.asyncinterfaces/7.0.0/microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",
     "/home/sundaythequant/.nuget/packages/microsoft.build.framework/17.8.3/microsoft.build.framework.17.8.3.nupkg.sha512",

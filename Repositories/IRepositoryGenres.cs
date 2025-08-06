@@ -11,4 +11,5 @@ public interface IRepositoryGenres
     Task Update(Genre genre);
     Task Delete(int Id);
     Task<List<int>> ListExists(List<int> ids);
+    Task<bool> Exists(int id, string Name);
 }
