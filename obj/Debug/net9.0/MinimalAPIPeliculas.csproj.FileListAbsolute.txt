@@ -159,3 +159,16 @@
 /home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/obj/Debug/net9.0/ref/MinimalAPIPeliculas.dll
 /home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/FluentValidation.dll
 /home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/FluentValidation.DependencyInjectionExtensions.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/Microsoft.IdentityModel.Abstractions.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/Microsoft.IdentityModel.Logging.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/Microsoft.IdentityModel.Tokens.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/Microsoft.AspNetCore.Cryptography.Internal.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/Microsoft.Extensions.Identity.Core.dll
+/home/sundaythequant/RiderProjects/MinimalAPIPeliculas/MinimalAPIPeliculas/bin/Debug/net9.0/Microsoft.Extensions.Identity.Stores.dll

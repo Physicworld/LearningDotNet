@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MinimalAPIPeliculas.Entities;
 
 namespace MinimalAPIPeliculas;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext
 {
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {
@@ -30,6 +32,14 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Movie>().Property(p => p.Poster).IsUnicode();
         modelBuilder.Entity<GenreMovie>().HasKey(g => new { g.GenreId, g.MovieId });
         modelBuilder.Entity<ActorMovie>().HasKey(g => new { g.ActorId, g.MovieId });
+        
+        modelBuilder.Entity<IdentityUser>().ToTable("Users");
+        modelBuilder.Entity<IdentityRole>().ToTable("Roles");
+        modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("RolesClaims");
+        modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("UsersClaims");
+        modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("UsersLogins");
+        modelBuilder.Entity<IdentityUserRole<string>>().ToTable("UsersRoles");
+        modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UsersTokens");
     }
 
     public DbSet<Genre> Genres { get; set; }

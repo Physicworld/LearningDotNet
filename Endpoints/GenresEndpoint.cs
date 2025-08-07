@@ -16,7 +16,8 @@ public static class GenresEndpoint
     public static RouteGroupBuilder MapGenres(this RouteGroupBuilder group)
     {
         group.MapGet("/", GetGenres)
-            .CacheOutput(c => c.Expire(TimeSpan.FromSeconds(60)).Tag("genres-get"));
+            .CacheOutput(c => c.Expire(TimeSpan.FromSeconds(60)).Tag("genres-get"))
+            .RequireAuthorization();
         group.MapGet("/{id:int}", GetGenreById).AddEndpointFilter<FilterValidations<CreateGenreDTO>>();
         group.MapPost("/", CreateGenre).AddEndpointFilter<FilterValidations<CreateGenreDTO>>();
         group.MapPut("/{id:int}", UpdateGenre);
