@@ -18,10 +18,19 @@ public static class GenresEndpoint
         group.MapGet("/", GetGenres)
             .CacheOutput(c => c.Expire(TimeSpan.FromSeconds(60)).Tag("genres-get"))
             .RequireAuthorization();
+
         group.MapGet("/{id:int}", GetGenreById).AddEndpointFilter<FilterValidations<CreateGenreDTO>>();
-        group.MapPost("/", CreateGenre).AddEndpointFilter<FilterValidations<CreateGenreDTO>>();
-        group.MapPut("/{id:int}", UpdateGenre);
-        group.MapDelete("/{id:int}", DeleteGenre);
+
+        group.MapPost("/", CreateGenre)
+            .AddEndpointFilter<FilterValidations<CreateGenreDTO>>()
+            .RequireAuthorization(policyNames: "isAdmin");
+
+        group.MapPut("/{id:int}", UpdateGenre)
+            .RequireAuthorization(policyNames: "isAdmin");
+
+        group.MapDelete("/{id:int}", DeleteGenre)
+            .RequireAuthorization(policyNames: "isAdmin");
+
         return group;
     }
 

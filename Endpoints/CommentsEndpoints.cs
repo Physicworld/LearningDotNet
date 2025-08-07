@@ -16,10 +16,18 @@ public static class CommentsEndpoints
         group.MapPost("/", Create)
             .AddEndpointFilter<FilterValidations<CreateCommentDTO>>()
             .RequireAuthorization();
-        group.MapGet("/", GetComments).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(60)).Tag("comments-get"));
+
+        group.MapGet("/", GetComments)
+            .CacheOutput(x => x.Expire(TimeSpan.FromSeconds(60)).Tag("comments-get"));
+
         group.MapGet("/{commentId:int}", GetCommentById);
-        group.MapPut("/{commentId:int}", Update).AddEndpointFilter<FilterValidations<CreateCommentDTO>>();
-        group.MapDelete("/{commentId:int}", Delete);
+
+        group.MapPut("/{commentId:int}", Update)
+            .AddEndpointFilter<FilterValidations<CreateCommentDTO>>()
+            .RequireAuthorization();
+
+        group.MapDelete("/{commentId:int}", Delete)
+            .RequireAuthorization();
         return group;
     }
 
@@ -105,7 +113,6 @@ public static class CommentsEndpoints
         CreateCommentDTO createCommentDto,
         IRepositoryComments repositoryComments,
         IRepositoryMovies repositoryMovies,
-        IMapper mapper,
         IOutputCacheStore outputCacheStore,
         IUserService userService
     )
@@ -133,24 +140,36 @@ public static class CommentsEndpoints
             return TypedResults.Forbid();
         }
 
-        var comment = mapper.Map<Comment>(createCommentDto);
-        comment.Id = commentId;
-        comment.MovieId = movieId;
-        await repositoryComments.Update(comment);
+        commentDB.Body = createCommentDto.Body;
+        await repositoryComments.Update(commentDB);
         await outputCacheStore.EvictByTagAsync("comments-get", default);
         return TypedResults.NoContent();
     }
 
-    static async Task<Results<NoContent, NotFound>> Delete(
+    static async Task<Results<NoContent, NotFound, ForbidHttpResult>> Delete(
         int movieId,
         int commentId,
         IRepositoryComments repositoryComments,
-        IOutputCacheStore outputCacheStore
+        IOutputCacheStore outputCacheStore,
+        IUserService userService
     )
     {
-        if (!await repositoryComments.Exists(commentId))
+        var commentDB = await repositoryComments.GetById(commentId);
+        if (commentDB is null)
         {
             return TypedResults.NotFound();
+        }
+
+        var user = await userService.GetUser();
+
+        if (user is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        if (commentDB.UserId != user.Id)
+        {
+            return TypedResults.Forbid();
         }
 
         await repositoryComments.Delete(commentId);

@@ -16,13 +16,30 @@ public static class MoviesEndpoints
 
     public static RouteGroupBuilder MapMovies(this RouteGroupBuilder group)
     {
-        group.MapGet("/", GetMovies).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(60)).Tag("movies-get"));
+        group.MapGet("/", GetMovies)
+            .CacheOutput(x => x.Expire(TimeSpan.FromSeconds(60)).Tag("movies-get"));
+
         group.MapGet("/{Id:int}", GetByID);
-        group.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<FilterValidations<CreateMovieDTO>>();
-        group.MapPut("/{Id:int}", Update).DisableAntiforgery().AddEndpointFilter<FilterValidations<CreateMovieDTO>>();
-        group.MapDelete("/{Id:int}", Delete);
-        group.MapPost("/{Id:int}/assigngenres", AssignGenres);
-        group.MapPost("/{Id:int}/assignactors", AssignActors);
+
+        group.MapPost("/", Create)
+            .DisableAntiforgery()
+            .AddEndpointFilter<FilterValidations<CreateMovieDTO>>()
+            .RequireAuthorization(policyNames: "isAdmin");
+
+        group.MapPut("/{Id:int}", Update)
+            .DisableAntiforgery()
+            .AddEndpointFilter<FilterValidations<CreateMovieDTO>>()
+            .RequireAuthorization(policyNames: "isAdmin");
+
+        group.MapDelete("/{Id:int}", Delete)
+            .RequireAuthorization(policyNames: "isAdmin");
+
+        group.MapPost("/{Id:int}/assigngenres", AssignGenres)
+            .RequireAuthorization(policyNames: "isAdmin");
+
+        group.MapPost("/{Id:int}/assignactors", AssignActors)
+            .RequireAuthorization(policyNames: "isAdmin");
+
         return group;
     }
 
